@@ -1,5 +1,88 @@
 <app-home-button></app-home-button>
-<br>
+<section class="text-gray-600 body-fon">
+  <div
+    class="container mx-auto flex flex-wrap justify-center items-stretch py-10"
+  >
+    <div
+      class="p-4 lg:w-10/12 flex-grow bg-white bg-opacity-95 px-10 pt-8 pb-5 rounded-lg overflow-hidden relative border-4 border-primary border-gray-600"
+    >
+      <!-- DIV BUSCADOR -->
+      <div
+        class="flex items-start "
+        style="margin-top: auto"
+      >
+        <mat-form-field appearance="fill" class="full-width mr-2">
+          <mat-label>Ingresa el nombre de tu artículo</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <!-- Lupa para indicar búsqueda -->
+          <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)" placeholder="Buscar producto...">
+        </mat-form-field>
+        <button mat-stroked-button color="accent" (click)="openCartDialog()">
+          <mat-icon>shopping_cart</mat-icon>Ver Carrito
+        </button>
+      </div>
+      <!-- DIV ARTICULOS -->
+      <div class="container px-5 py-10 mx-auto">
+        <div class="flex flex-wrap -m-4 items-stretch">
+          <div
+            *ngFor="let product of products"
+            class="lg:w-1/4 md:w-1/2 p-4 w-full flex flex-col"
+          >
+            <a class="block relative h-48 rounded overflow-hidden">
+              <img
+                alt="ecommerce"
+                class="mb-3 border border-gray-600 rounded-lg object-contain w-full h-full"
+                [src]="product.foto"
+              />
+            </a>
+            <div class="mt-4 flex-grow">
+              <p class="text-gray-900 title-font text-lg font-medium">
+                {{ product.nombre }}
+              </p>
+              <p class="text-black text-sm tracking-widest title-font mb-1">
+                {{ product.descripcion }}
+              </p>
+              <p class="text-black text-base tracking-widest title-font mb-1">
+                Disponibles: {{ product.cantidad }}
+              </p>
+              <p class="text-black text-base mt-1">
+                {{ product.precio | currency }}
+              </p>
+            </div>
+            <div class="mt-4" style="margin-top: auto">
+              <div class="flex items-baseline w-full mt-2">
+                <mat-form-field appearance="fill" class="w-1/3 mr-2">
+                  <mat-label>Cantidad</mat-label>
+                  <mat-select
+                    [(value)]="product.cantidad"
+                    [disabled]="product.cantidad === 0"
+                  >
+                    <mat-option
+                      *ngFor="let qty of getQuantityOptions(product.cantidad)"
+                      [value]="qty"
+                    >
+                      {{ qty }}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <button
+                  mat-stroked-button
+                  color="primary"
+                  class="w-2/3 h-full flex items-center justify-center"
+                  (click)="addToCart(product)"
+                  [disabled]="product.cantidad === 0"
+                >
+                  <mat-icon>add_shopping_cart</mat-icon>Añadir al carrito
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- <br>
 <br>
 <br>
 <button mat-raised-button (click)="consultarUsuario()" class="py-5">
@@ -9,4 +92,15 @@
 <br>
 <button mat-raised-button (click)="agregarUsuario()" class="py-5">
   Agregar Usuario
+</button> -->
+<!-- <br>
+<br>
+<br>
+<button mat-raised-button (click)="consultarUsuario()" class="py-5">
+  Consultar Usuario
 </button>
+<br>
+<br>
+<button mat-raised-button (click)="agregarUsuario()" class="py-5">
+  Agregar Usuario
+</button> -->

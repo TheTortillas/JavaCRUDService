@@ -15,8 +15,8 @@
               class="mb-3 border border-gray-600 rounded-lg"
               id="foto"
               #imageElement
-              [class.interactable]="isAddingArticle"
-              (click)="isAddingArticle ? fileInput.click() : null"
+              [class.interactable]="isAddingArticle || isEditingArticle"
+              (click)="(isAddingArticle || isEditingArticle) ? fileInput.click() : null"
               matTooltip="Haz click para añadir una imagen"
               [matTooltipDisabled]="!isAddingArticle && !isEditingArticle"
             />
@@ -181,7 +181,7 @@
                   <button
                     mat-icon-button
                     color="warn"
-                    (click)="deleteProduct(element)"
+                    (click)="deleteProduct(element); $event.stopPropagation()"
                   >
                     <mat-icon>delete</mat-icon>
                   </button>
@@ -210,9 +210,9 @@
   </div>
 </section>
 
-<br />
+<!-- <br />
 <br />
 <br />
 <button mat-raised-button (click)="getArticle()" class="py-5">
   Consultar Articulo
-</button>
+</button> -->

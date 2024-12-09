@@ -17,13 +17,13 @@ import { ProductsService } from '../../../services/products.service';
 import { CommonModule } from '@angular/common';
 
 export interface Product {
+  id_articulo?: number;
   nombre: string;
   descripcion: string;
   precio: number;
   cantidad: number;
   foto: string;
 }
-
 
 @Component({
   selector: 'app-manage-articles',
@@ -51,6 +51,7 @@ export class ManageArticlesComponent implements AfterViewInit {
   foto: string | null = null; // Para guardar la foto en base64
   isAddingArticle: boolean = false; // Para habilitar/deshabilitar el formulario
   isEditingArticle: boolean = false; // Para habilitar/deshabilitar el formulario
+  current_id_product?: number;
 
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined;
 
@@ -67,16 +68,9 @@ export class ManageArticlesComponent implements AfterViewInit {
     }
   }
 
-  editProduct(product: Product): void {
-    console.log('Edit product:', product);
-  }
-
-  deleteProduct(product: Product): void {
-    console.log('Delete product:', product);
-  }
-
   enableAddArticle(imageElement: HTMLImageElement): void {
     this.isAddingArticle = true;
+    this.isEditingArticle = false;
     this.clearInputs();
     imageElement.src = 'https://dummyimage.com/600x400/000/fff';
   }
@@ -84,6 +78,10 @@ export class ManageArticlesComponent implements AfterViewInit {
   enableEditArticle(articulo: Product, imageElement: HTMLImageElement): void {
     this.isEditingArticle = true;
     this.isAddingArticle = false;
+
+    // Asignar id_articulo
+    this.current_id_product = articulo.id_articulo;
+    console.log('ID del producto seleccionado:', this.current_id_product); // Para verificar
 
     // Rellenar los campos con los datos del producto
     (document.getElementById('nombre') as HTMLInputElement).value = articulo.nombre;
@@ -123,8 +121,8 @@ export class ManageArticlesComponent implements AfterViewInit {
       reader.onload = () => {
         imageElement.src = reader.result as string;
         this.foto = (reader.result as string).split(',')[1];
-        //console.log('Selected file:', file);
-        //console.log('Base64 data:', this.foto);
+        // console.log('Selected file:', file);
+        // console.log('Base64 data:', this.foto);
       };
       reader.readAsDataURL(file);
     }
@@ -136,7 +134,7 @@ export class ManageArticlesComponent implements AfterViewInit {
     const descripcion = (document.getElementById('descripcion') as HTMLTextAreaElement).value;
     const precio = parseFloat((document.getElementById('precio') as HTMLInputElement).value);
     const cantidad = parseInt((document.getElementById('cantidad') as HTMLInputElement).value, 10);
-
+  
     // Validar que la foto esté cargada
     if (!this.foto) {
       alert('Por favor, seleccione una foto para el producto.');
@@ -144,11 +142,11 @@ export class ManageArticlesComponent implements AfterViewInit {
     }
     
     // Validar que los campos obligatorios no estén vacíos
-    if (!nombre || !descripcion || isNaN(precio) || isNaN(cantidad) || cantidad <= 0 || cantidad < 0) {
+    if (!nombre || !descripcion || isNaN(precio) || isNaN(cantidad) || cantidad <= 0) {
       alert('Por favor complete todos los campos correctamente.');
       return;
     }
-
+  
     const newProduct: Product = {
       nombre,
       descripcion,
@@ -156,17 +154,19 @@ export class ManageArticlesComponent implements AfterViewInit {
       cantidad,
       foto: this.foto || '',
     };
-
+  
     console.log('Objeto a enviar:', newProduct);  // Verifica que los datos sean correctos
-
+  
     this.productsService.addProduct(newProduct).subscribe({
       next: (response) => {
-        console.log('Respuesta del servidor:', response); // Para ver qué está devolviendo el backend
-        if ('message' in response) {
+        if (response && 'message' in response) {
+          // Caso de error
           alert(`Error: ${response.message}`);
         } else {
+          // Caso de éxito
           alert('Producto agregado correctamente');
           this.cancelAddArticle(document.getElementById('foto') as HTMLImageElement);
+          this.fetchProducts();  // Mover aquí para que se ejecute solo en éxito
         }
       },
       error: (err) => {
@@ -174,9 +174,8 @@ export class ManageArticlesComponent implements AfterViewInit {
         alert('Hubo un error al agregar el producto. Inténtalo de nuevo.');
       },
     });  
-    
-    this.fetchProducts();  // Actualiza la tabla con los nuevos datos
   }
+  
 
   // Método para consultar un artículo
   getArticle(): void {
@@ -219,7 +218,7 @@ export class ManageArticlesComponent implements AfterViewInit {
       if ((response as Product).nombre) {
         const articulo = response as Product;
         console.log('El artículo es:', articulo);
-
+          
         const imageElement = document.getElementById('foto') as HTMLImageElement;
         this.enableEditArticle(articulo, imageElement);
       } else {
@@ -270,34 +269,38 @@ export class ManageArticlesComponent implements AfterViewInit {
     const descripcion = (document.getElementById('descripcion') as HTMLTextAreaElement).value;
     const precio = parseFloat((document.getElementById('precio') as HTMLInputElement).value);
     const cantidad = parseInt((document.getElementById('cantidad') as HTMLInputElement).value, 10);
-  
+    
     if (!this.foto) {
       alert('Por favor, seleccione una foto para el producto.');
       return;
     }
-  
+    
     if (!nombre || !descripcion || isNaN(precio) || isNaN(cantidad) || cantidad <= 0) {
       alert('Por favor complete todos los campos correctamente.');
       return;
     }
-  
+    
     const updatedProduct: Product = {
+      id_articulo: this.current_id_product,
       nombre,
       descripcion,
       precio,
       cantidad,
       foto: this.foto || '',
     };
-    
+  
     console.log('Objeto a actualizar:', updatedProduct);
-
+  
     this.productsService.updateProduct(updatedProduct).subscribe({
       next: (response) => {
-        if ('message' in response) {
+        if (response && 'message' in response) {
+          // Caso de error
           alert(`Error: ${response.message}`);
         } else {
+          // Caso de éxito
           alert('Producto actualizado correctamente');
           this.cancelEditArticle(document.getElementById('foto') as HTMLImageElement);
+          this.fetchProducts();  // Mover aquí para que se ejecute solo en éxito
         }
       },
       error: (err) => {
@@ -305,5 +308,27 @@ export class ManageArticlesComponent implements AfterViewInit {
         alert('Hubo un error al actualizar el producto. Inténtalo de nuevo.');
       },
     });
+  }
+  
+
+  deleteProduct(product: Product): void {
+    const confirmDelete = confirm(`¿Estás seguro de que deseas eliminar el producto: ${product.nombre}?`);
+    if (confirmDelete) {
+      this.productsService.deleteProduct(product.id_articulo!).subscribe({
+        next: () => {
+          alert('Producto eliminado correctamente');
+          this.clearInputs();
+          this.isAddingArticle = false;
+          this.isEditingArticle = false;
+          const imageElement = document.getElementById('foto') as HTMLImageElement;
+          imageElement.src = 'https://dummyimage.com/600x400/000/fff'; // Restablecer la imagen a la predeterminada
+          this.fetchProducts();  // Recargamos la lista de productos
+        },
+        error: (err) => {
+          console.error('Error al eliminar el producto:', err);
+          alert('Hubo un error al eliminar el producto. Inténtalo de nuevo.');
+        }
+      });
+    }
   }
 }
