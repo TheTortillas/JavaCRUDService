@@ -6,6 +6,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-shopping-cart-dialog',
@@ -50,13 +51,13 @@ export class ShoppingCartDialogComponent implements OnInit {
   buy(): void {
     this.productsService.realizarCompra().subscribe({
       next: () => {
-        alert('Compra realizada con éxito');
+        Swal.fire('Éxito', 'Compra realizada con éxito', 'success');
         this.dialogRef.close();
         this.loadCart(); // Recargar el carrito después de la compra
       },
       error: (err) => {
         console.error('Error al realizar la compra:', err);
-        alert('Hubo un error al realizar la compra. Inténtalo de nuevo.');
+        Swal.fire('Error', 'Hubo un error al realizar la compra. Inténtalo de nuevo.', 'error');
       }
     });
   }

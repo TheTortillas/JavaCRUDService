@@ -15,6 +15,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ProductsService } from '../../../services/products.service';
 import { CommonModule } from '@angular/common';
+import Swal from 'sweetalert2';
 
 export interface Product {
   id_articulo?: number;
@@ -137,13 +138,13 @@ export class ManageArticlesComponent implements AfterViewInit {
   
     // Validar que la foto esté cargada
     if (!this.foto) {
-      alert('Por favor, seleccione una foto para el producto.');
+      Swal.fire('Error', 'Por favor, seleccione una foto para el producto.', 'error');
       return;
     }
     
     // Validar que los campos obligatorios no estén vacíos
     if (!nombre || !descripcion || isNaN(precio) || isNaN(cantidad) || cantidad <= 0) {
-      alert('Por favor complete todos los campos correctamente.');
+      Swal.fire('Error', 'Por favor complete todos los campos correctamente.', 'error');
       return;
     }
   
@@ -161,17 +162,17 @@ export class ManageArticlesComponent implements AfterViewInit {
       next: (response) => {
         if (response && 'message' in response) {
           // Caso de error
-          alert(`Error: ${response.message}`);
+          Swal.fire('Error', `Error: ${response.message}`, 'error');
         } else {
           // Caso de éxito
-          alert('Producto agregado correctamente');
+          Swal.fire('Éxito', 'Producto agregado correctamente', 'success');
           this.cancelAddArticle(document.getElementById('foto') as HTMLImageElement);
           this.fetchProducts();  // Mover aquí para que se ejecute solo en éxito
         }
       },
       error: (err) => {
         console.log('Error al agregar el artículo:', err);
-        alert('Hubo un error al agregar el producto. Inténtalo de nuevo.');
+        Swal.fire('Error', 'Hubo un error al agregar el producto. Inténtalo de nuevo.', 'error');
       },
     });  
   }
@@ -207,7 +208,7 @@ export class ManageArticlesComponent implements AfterViewInit {
       },
       error: (err) => {
         console.error('Error fetching products:', err);
-        alert('Hubo un error al cargar los productos.');
+        Swal.fire('Error', 'Hubo un error al cargar los productos.', 'error');
       }
     });
   }
@@ -271,12 +272,12 @@ export class ManageArticlesComponent implements AfterViewInit {
     const cantidad = parseInt((document.getElementById('cantidad') as HTMLInputElement).value, 10);
     
     if (!this.foto) {
-      alert('Por favor, seleccione una foto para el producto.');
+      Swal.fire('Error', 'Por favor, seleccione una foto para el producto.', 'error');
       return;
     }
     
     if (!nombre || !descripcion || isNaN(precio) || isNaN(cantidad) || cantidad <= 0) {
-      alert('Por favor complete todos los campos correctamente.');
+      Swal.fire('Error', 'Por favor complete todos los campos correctamente.', 'error');
       return;
     }
     
@@ -295,40 +296,48 @@ export class ManageArticlesComponent implements AfterViewInit {
       next: (response) => {
         if (response && 'message' in response) {
           // Caso de error
-          alert(`Error: ${response.message}`);
+          Swal.fire('Error', `Error: ${response.message}`, 'error');
         } else {
           // Caso de éxito
-          alert('Producto actualizado correctamente');
+          Swal.fire('Éxito', 'Producto actualizado correctamente', 'success');
           this.cancelEditArticle(document.getElementById('foto') as HTMLImageElement);
           this.fetchProducts();  // Mover aquí para que se ejecute solo en éxito
         }
       },
       error: (err) => {
         console.error('Error al actualizar el artículo:', err);
-        alert('Hubo un error al actualizar el producto. Inténtalo de nuevo.');
+        Swal.fire('Error', 'Hubo un error al actualizar el producto. Inténtalo de nuevo.', 'error');
       },
     });
   }
   
 
   deleteProduct(product: Product): void {
-    const confirmDelete = confirm(`¿Estás seguro de que deseas eliminar el producto: ${product.nombre}?`);
-    if (confirmDelete) {
-      this.productsService.deleteProduct(product.id_articulo!).subscribe({
-        next: () => {
-          alert('Producto eliminado correctamente');
-          this.clearInputs();
-          this.isAddingArticle = false;
-          this.isEditingArticle = false;
-          const imageElement = document.getElementById('foto') as HTMLImageElement;
-          imageElement.src = 'https://dummyimage.com/600x400/000/fff'; // Restablecer la imagen a la predeterminada
-          this.fetchProducts();  // Recargamos la lista de productos
-        },
-        error: (err) => {
-          console.error('Error al eliminar el producto:', err);
-          alert('Hubo un error al eliminar el producto. Inténtalo de nuevo.');
-        }
-      });
-    }
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: `¿Estás seguro de que deseas eliminar el producto: ${product.nombre}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.productsService.deleteProduct(product.id_articulo!).subscribe({
+          next: () => {
+            Swal.fire('Eliminado', 'Producto eliminado correctamente', 'success');
+            this.clearInputs();
+            this.isAddingArticle = false;
+            this.isEditingArticle = false;
+            const imageElement = document.getElementById('foto') as HTMLImageElement;
+            imageElement.src = 'https://dummyimage.com/600x400/000/fff'; // Restablecer la imagen a la predeterminada
+            this.fetchProducts();  // Recargamos la lista de productos
+          },
+          error: (err) => {
+            console.error('Error al eliminar el producto:', err);
+            Swal.fire('Error', 'Hubo un error al eliminar el producto. Inténtalo de nuevo.', 'error');
+          }
+        });
+      }
+    });
   }
 }

@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { ShoppingCartDialogComponent } from '../../../shared/components/shopping-cart-dialog/shopping-cart-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
+import Swal from 'sweetalert2';
 
 export interface Product {
   id_articulo: number;
@@ -101,7 +102,7 @@ export class ShoppingCartComponent implements OnInit {
 
   addToCart(product: Product): void {
     if (product.cantidad <= 0) {
-      alert('La cantidad debe ser mayor a 0');
+      Swal.fire('Error', 'La cantidad debe ser mayor a 0', 'error');
       return;
     }
   
@@ -125,7 +126,7 @@ export class ShoppingCartComponent implements OnInit {
             const cantidadTotal = cantidadEnCarrito + product.cantidad;
   
             if (cantidadTotal > cantidadDisponible) {
-              alert(`No puedes añadir más de ${ cantidadEnCarrito} unidades de este producto al carrito.`);
+              Swal.fire('Error', `No puedes añadir más de ${ cantidadEnCarrito} unidades de este producto al carrito.`, 'error');
               return;
             }
   
@@ -133,24 +134,24 @@ export class ShoppingCartComponent implements OnInit {
             console.log(`Añadido al carrito: ${product.nombre}, Cantidad: ${product.cantidad}`);
             this.productsService.addToCart(product.id_articulo, product.cantidad).subscribe({
               next: () => {
-                alert('Producto añadido al carrito');
+                Swal.fire('Éxito', 'Producto añadido al carrito', 'success');
                 this.loadProducts();  // Actualizamos el estado del carrito
               },
               error: (err) => {
                 console.error('Error al añadir el producto al carrito:', err);
-                alert('Hubo un error al añadir el producto al carrito. Inténtalo de nuevo.');
+                Swal.fire('Error', 'Hubo un error al añadir el producto al carrito. Inténtalo de nuevo.', 'error');
               }
             });
           },
           error: (err) => {
             console.error('Error al obtener los productos del carrito:', err);
-            alert('Hubo un error al verificar los productos en el carrito. Inténtalo de nuevo.');
+            Swal.fire('Error', 'Hubo un error al verificar los productos en el carrito. Inténtalo de nuevo.', 'error');
           }
         });
       },
       error: (err) => {
         console.error('Error al obtener la cantidad disponible:', err);
-        alert('Hubo un error al verificar la cantidad disponible. Inténtalo de nuevo.');
+        Swal.fire('Error', 'Hubo un error al verificar la cantidad disponible. Inténtalo de nuevo.', 'error');
       }
     });
   }
