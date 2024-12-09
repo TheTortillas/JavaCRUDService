@@ -1,0 +1,218 @@
+<app-home-button></app-home-button>
+<section class="text-gray-600 body-font">
+  <div class="container mx-auto">
+    <div class="flex flex-wrap justify-center items-stretch">
+      <!-- DIV DATOS -->
+      <div class="p-4 lg:w-1/3 flex-grow">
+        <div
+          class="card h-full bg-white bg-opacity-95 px-10 pt-8 pb-5 rounded-lg overflow-hidden text-center relative border-4 border-primary border-gray-600"
+        >
+          <div class="">
+            <label for="foto" class="font-bold text-black">Foto:</label>
+            <img
+              src="https://dummyimage.com/600x400/000/fff"
+              alt="Foto del artículo"
+              class="mb-3 border border-gray-600 rounded-lg"
+              id="foto"
+              #imageElement
+              [class.interactable]="isAddingArticle"
+              (click)="isAddingArticle ? fileInput.click() : null"
+              matTooltip="Haz click para añadir una imagen"
+              [matTooltipDisabled]="!isAddingArticle && !isEditingArticle"
+            />
+            <input
+              type="file"
+              accept="image/*"
+              #fileInput
+              style="display: none"
+              (change)="onFileSelected($event, imageElement)"
+            />
+            <mat-divider class="py-2"></mat-divider>
+            <label for="nombre" class="font-bold text-black"
+              >Nombre del producto:</label
+            >
+            <mat-form-field class="full-width mb-1" style="width: 100%">
+              <mat-label>Nombre</mat-label>
+              <input
+                matInput
+                placeholder="Nombre del artículo"
+                [disabled]="!isAddingArticle && !isEditingArticle"
+                id="nombre"
+              />
+            </mat-form-field>
+
+            <label for="descripcion" class="font-bold text-black"
+              >Descripción del producto:</label
+            >
+            <mat-form-field class="full-width mb-1" style="width: 100%">
+              <mat-label>Descripción</mat-label>
+              <textarea
+                matInput
+                placeholder="Descripción del artículo"
+                [disabled]="!isAddingArticle && !isEditingArticle"
+                id="descripcion"
+              ></textarea>
+            </mat-form-field>
+
+            <label for="precio" class="font-bold text-black">Precio:</label>
+            <mat-form-field class="full-width mb-1" style="width: 100%">
+              <mat-label>Precio</mat-label>
+              <input
+                matInput
+                type="number"
+                placeholder="Precio del artículo"
+                [disabled]="!isAddingArticle && !isEditingArticle"
+                id="precio"
+              />
+            </mat-form-field>
+
+            <label for="cantidad" class="font-bold text-black">Cantidad:</label>
+            <mat-form-field class="full-width mb-3" style="width: 100%">
+              <mat-label>Cantidad</mat-label>
+              <input
+                matInput
+                type="number"
+                placeholder="Cantidad disponible"
+                [disabled]="!isAddingArticle && !isEditingArticle"
+                id="cantidad"
+              />
+            </mat-form-field>
+
+            <!-- First Button Group: Add Article -->
+            <div class="button-group mt-4 mb-5" *ngIf="isAddingArticle">
+              <button
+                mat-stroked-button
+                color="primary"
+                class="full-width mr-2"
+                style="width: 40%"
+                (click)="addArticle()"
+              >
+                <mat-icon>save</mat-icon>
+                Guardar
+              </button>
+              <button
+                mat-stroked-button
+                color="warn"
+                style="width: 40%"
+                (click)="cancelAddArticle(imageElement)"
+              >
+                <mat-icon>cancel</mat-icon>
+                Cancelar
+              </button>
+            </div>
+
+            <!-- Second Button Group: Edit Article -->
+            <div class="button-group mt-4 mb-5" *ngIf="isEditingArticle">
+              <button
+                mat-stroked-button
+                color="primary"
+                class="full-width mr-2"
+                style="width: 60%"
+                (click)="updateArticle()"
+              >
+                <mat-icon>save</mat-icon>
+                Guardar Cambios
+              </button>
+              <button
+                mat-stroked-button
+                color="warn"
+                style="width: 40%"
+                (click)="cancelEditArticle(imageElement)"
+              >
+                <mat-icon>cancel</mat-icon>
+                Cancelar
+              </button>
+            </div>
+
+            <!-- Add Article Button -->
+            <button
+              mat-stroked-button
+              color="primary"
+              (click)="enableAddArticle(imageElement)"
+              class="full-width -mb-2"
+              *ngIf="!isAddingArticle && !isEditingArticle"
+            >
+              <mat-icon>add</mat-icon>
+              Añadir Artículo
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIV TABLA -->
+      <div class="p-4 lg:w-2/3 flex-grow">
+        <div
+          class="card h-full bg-white bg-opacity-95 px-8 pt-16 pb-24 rounded-lg overflow-hidden text-center relative border-4 border-primary border-gray-600"
+        >
+          <div class="mat-elevation-z8">
+            <table mat-table [dataSource]="dataSource">
+              <!-- Index Column -->
+              <ng-container matColumnDef="index">
+                <th mat-header-cell *matHeaderCellDef>No.</th>
+                <td mat-cell *matCellDef="let element; let i = index">
+                  {{ i + 1 }}
+                </td>
+              </ng-container>
+
+              <!-- Nombre Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Nombre</th>
+                <td mat-cell *matCellDef="let element">{{ element.nombre }}</td>
+              </ng-container>
+
+              <!-- Precio Column -->
+              <ng-container matColumnDef="price">
+                <th mat-header-cell *matHeaderCellDef>Precio</th>
+                <td mat-cell *matCellDef="let element">{{ element.precio }}</td>
+              </ng-container>
+
+              <!-- Cantidad Column -->
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.cantidad }}
+                </td>
+              </ng-container>
+
+              <!-- Delete Column -->
+              <ng-container matColumnDef="delete">
+                <th mat-header-cell *matHeaderCellDef>Borrar</th>
+                <td mat-cell *matCellDef="let element">
+                  <button
+                    mat-icon-button
+                    color="warn"
+                    (click)="deleteProduct(element)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr
+                mat-row
+                *matRowDef="let row; columns: displayedColumns"
+                (click)="selectProduct(row)"
+                class="interactive-row"
+              ></tr>
+            </table>
+
+            <mat-paginator
+              [pageSize]="20"
+              showFirstLastButtons
+              aria-label="Select page of products"
+            >
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<br />
+<br />
+<br />
+<button mat-raised-button (click)="getArticle()" class="py-5">
+  Consultar Articulo
+</button>
