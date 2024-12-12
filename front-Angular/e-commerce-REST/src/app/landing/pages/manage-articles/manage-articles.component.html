@@ -57,25 +57,30 @@
             <label for="precio" class="font-bold text-black">Precio:</label>
             <mat-form-field class="full-width mb-1" style="width: 100%">
               <mat-label>Precio</mat-label>
+              <mat-icon matPrefix>attach_money</mat-icon>
               <input
-                matInput
-                type="number"
-                placeholder="Precio del artículo"
-                [disabled]="!isAddingArticle && !isEditingArticle"
-                id="precio"
-              />
+              matInput
+              type="number"
+              placeholder="Precio del artículo"
+              [disabled]="!isAddingArticle && !isEditingArticle"
+              id="precio"
+              step="0.01"
+              min="0.01"
+            />
             </mat-form-field>
 
             <label for="cantidad" class="font-bold text-black">Cantidad:</label>
             <mat-form-field class="full-width mb-3" style="width: 100%">
               <mat-label>Cantidad</mat-label>
               <input
-                matInput
-                type="number"
-                placeholder="Cantidad disponible"
-                [disabled]="!isAddingArticle && !isEditingArticle"
-                id="cantidad"
-              />
+              matInput
+              type="number"
+              placeholder="Cantidad disponible"
+              [disabled]="!isAddingArticle && !isEditingArticle"
+              id="cantidad"
+              min="1"
+              step="1"
+            />
             </mat-form-field>
 
             <!-- First Button Group: Add Article -->
