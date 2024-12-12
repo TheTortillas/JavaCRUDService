@@ -1,13 +1,13 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
+/front-Angular/e-commerce-REST/dist
+/front-Angular/e-commerce-REST/tmp
+/front-Angular/e-commerce-REST/out-tsc
+/front-Angular/e-commerce-REST/bazel-out
 
 # Node
-/node_modules
+/front-Angular/e-commerce-REST/node_modules
 npm-debug.log
 yarn-error.log
 
@@ -29,14 +29,24 @@ yarn-error.log
 .history/*
 
 # Miscellaneous
-/.angular/cache
+/front-Angular/e-commerce-REST/.angular/cache
 .sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
+/front-Angular/e-commerce-REST/connect.lock
+/front-Angular/e-commerce-REST/coverage
+/front-Angular/e-commerce-REST/libpeerconnection.log
 testem.log
-/typings
+/front-Angular/e-commerce-REST/typings
 
 # System files
 .DS_Store
 Thumbs.db
+
+# Java class files
+*.class
+
+# Archivos del profe Pineda
+/servicio_json
+/servicio_url
+compila_json.sh
+compila_url.sh
+servicio.txt
