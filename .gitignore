@@ -21,16 +21,16 @@ yarn-error.log
 *.sublime-workspace
 
 # Visual Studio Code
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-.history/*
+/front-Angular/e-commerce-REST/.vscode/*
+/front-Angular/e-commerce-REST/!.vscode/settings.json
+/front-Angular/e-commerce-REST/!.vscode/tasks.json
+/front-Angular/e-commerce-REST/!.vscode/launch.json
+/front-Angular/e-commerce-REST/!.vscode/extensions.json
+/front-Angular/e-commerce-REST/.history/*
 
 # Miscellaneous
 /front-Angular/e-commerce-REST/.angular/cache
-.sass-cache/
+/front-Angular/e-commerce-REST/.sass-cache/
 /front-Angular/e-commerce-REST/connect.lock
 /front-Angular/e-commerce-REST/coverage
 /front-Angular/e-commerce-REST/libpeerconnection.log
@@ -45,8 +45,9 @@ Thumbs.db
 *.class
 
 # Archivos del profe Pineda
-/servicio_json
-/servicio_url
+/Servicio/servicio_json
+/Servicio/servicio_url
+/Servicio/node_modules
 compila_json.sh
 compila_url.sh
 servicio.txt
