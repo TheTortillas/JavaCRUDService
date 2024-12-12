@@ -44,6 +44,9 @@ Thumbs.db
 # Java class files
 *.class
 
+# Temp files
+*.tmp  
+
 # Archivos del profe Pineda
 /Servicio/servicio_json
 /Servicio/servicio_url
