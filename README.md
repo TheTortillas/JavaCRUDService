@@ -1,27 +1,25 @@
 # ECommerceREST
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.10.
+Este es un prototipo de un sistema de comercio electrónico que implementa un CRUD utilizando un servicio REST utlizando el framework de Angular 18 como frontend, Java para el backend y Tomcat para levantar el servidor sobre un entorno de Linux.
+## Requisitos Previos
 
-## Development server
+- Node.js y npm instalados.
+		sudo apt update
+		curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+		nvm install 22
+		node -v # should print `v22.12.0`
+		npm -v # should print `10.9.0`
+- Java Development Kit (JDK) instalado.
+		sudo apt update
+		sudo apt install openjdk-21-jdk
+		java -version 
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Apache Tomcat 8.5.99.
+Para ejecutar el servidor de Tomcat será necesario crear las variables de entorno para JAVA_HOME y CATALINA_HOME, para esto ejeutamos los siguientes dos comandos:
+		export CATALINA_HOME=aquí va la ruta absoluta del directorio de Tomcat 8
+		export JAVA_HOME= aquíva la ruta absoluta del directorio donde está el directorio bin que contiene el programa java
+Si quieres solo replicar para ejecutar como está realiza lo siguiente:
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Clona el proyecto en un repositorio local con:
+		https://github.com/TheTortillas/JavaCRUDService.git
+-
